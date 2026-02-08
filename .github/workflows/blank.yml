@@ -1,0 +1,282 @@
+name: Build FMOD Banks (user-selectable)
+
+on:
+  workflow_dispatch:
+    inputs:
+      runner_os:
+        description: "Qual runner usar"
+        required: true
+        default: "windows"
+        type: choice
+        options:
+          - windows
+          - linux
+      fmod_channel:
+        description: "Qual pacote do FMOD Studio baixar (do seu Release)"
+        required: true
+        default: "win64-exe"
+        type: choice
+        options:
+          - win64-exe
+          - linux-deb
+          - linux-appimage
+      fspro_path:
+        description: "Caminho do .fspro no repo"
+        required: true
+        default: "celeste_audio.fspro"
+      build_arg:
+        description: "Argumentos extras (opcional) para o FMOD Studio CLI"
+        required: false
+        default: ""
+      artifact_name:
+        description: "Nome do artifact de saída"
+        required: true
+        default: "fmod-banks"
+
+jobs:
+  build-windows:
+    if: ${{ inputs.runner_os == 'windows' && inputs.fmod_channel == 'win64-exe' }}
+    runs-on: windows-latest
+    env:
+      FSPRO: ${{ inputs.fspro_path }}
+      ARTIFACT: ${{ inputs.artifact_name }}
+      # Seu release atual (ajuste tag se mudar)
+      FMOD_URL: https://github.com/kiroayu576-ops/STUDIO-/releases/download/Va/fmodstudio20302win64-installer.exe
+      INSTALL_DIR: C:\FMODStudio
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download FMOD Studio installer (Windows)
+        shell: powershell
+        run: |
+          Invoke-WebRequest -Uri "$env:FMOD_URL" -OutFile "fmod_installer.exe"
+
+      - name: Install FMOD Studio (silent best-effort)
+        shell: powershell
+        run: |
+          New-Item -ItemType Directory -Force -Path "$env:INSTALL_DIR" | Out-Null
+
+          # Muitos installers do FMOD são NSIS e aceitam /S e /D=...
+          # Se não aceitar, este passo pode falhar e você vai precisar instalar via runner self-hosted.
+          $args = @("/S", "/D=$($env:INSTALL_DIR)")
+          $p = Start-Process -FilePath ".\fmod_installer.exe" -ArgumentList $args -Wait -PassThru
+          if ($p.ExitCode -ne 0) {
+            Write-Error "Falhou instalar FMOD (ExitCode=$($p.ExitCode)). Se o installer não suportar modo silencioso, use runner self-hosted com FMOD já instalado."
+          }
+
+      - name: Locate fmodstudio.exe
+        shell: powershell
+        run: |
+          $candidates = @(
+            Join-Path $env:INSTALL_DIR "fmodstudio.exe",
+            Join-Path $env:INSTALL_DIR "FMOD Studio\fmodstudio.exe",
+            "C:\Program Files\FMOD SoundSystem\FMOD Studio\fmodstudio.exe",
+            "C:\Program Files\FMOD SoundSystem\FMOD Studio 2.02\fmodstudio.exe",
+            "C:\Program Files\FMOD SoundSystem\FMOD Studio 2.03\fmodstudio.exe"
+          )
+
+          $exe = $null
+          foreach ($p in $candidates) { if (Test-Path $p) { $exe = $p; break } }
+
+          if (-not $exe) {
+            # Busca ampla (mais lenta, mas robusta)
+            $hits = Get-ChildItem -Path "C:\" -Recurse -ErrorAction SilentlyContinue -Filter "fmodstudio.exe" | Select-Object -First 1
+            if ($hits) { $exe = $hits.FullName }
+          }
+
+          if (-not $exe) { Write-Error "Não encontrei fmodstudio.exe após instalação." }
+
+          echo "FMOD_EXE=$exe" | Out-File -FilePath $env:GITHUB_ENV -Append
+          Write-Host "FMOD_EXE=$exe"
+
+      - name: Build banks
+        shell: powershell
+        run: |
+          if (!(Test-Path $env:FSPRO)) { Write-Error ".fspro não encontrado: $env:FSPRO" }
+
+          $extra = $env:build_arg
+          if ([string]::IsNullOrWhiteSpace($extra)) {
+            & $env:FMOD_EXE -build $env:FSPRO
+          } else {
+            & $env:FMOD_EXE -build $env:FSPRO $extra
+          }
+
+      - name: Collect banks (keeps folder structure)
+        shell: powershell
+        run: |
+          New-Item -ItemType Directory -Force -Path "out_banks" | Out-Null
+
+          # Procura bancos gerados (geralmente em Build/ ou build/)
+          $banks = Get-ChildItem -Recurse -File -Filter "*.bank" | Where-Object {
+            $_.FullName -notmatch "\\(Assets|Metadata|Plugins)\\"
+          }
+
+          if (!$banks -or $banks.Count -eq 0) {
+            Write-Error "Nenhum .bank encontrado. Possível: build falhou ou o projeto não está configurado para gerar bancos."
+          }
+
+          foreach ($b in $banks) {
+            $rel = Resolve-Path $b.FullName | ForEach-Object { $_.Path.Substring((Resolve-Path ".").Path.Length).TrimStart('\') }
+            $dest = Join-Path "out_banks" $rel
+            $destDir = Split-Path -Parent $dest
+            New-Item -ItemType Directory -Force -Path $destDir | Out-Null
+            Copy-Item $b.FullName -Destination $dest -Force
+          }
+
+          $banks | Select-Object FullName, Length | Sort-Object Length -Descending | Format-Table -AutoSize
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.ARTIFACT }}
+          path: out_banks
+
+  build-linux-deb:
+    if: ${{ inputs.runner_os == 'linux' && inputs.fmod_channel == 'linux-deb' }}
+    runs-on: ubuntu-latest
+    env:
+      FSPRO: ${{ inputs.fspro_path }}
+      ARTIFACT: ${{ inputs.artifact_name }}
+      FMOD_URL: https://github.com/kiroayu576-ops/STUDIO-/releases/download/Va/fmodstudio20302linux64-installer.deb
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download FMOD Studio (.deb)
+        run: |
+          curl -L "$FMOD_URL" -o fmodstudio.deb
+
+      - name: Install FMOD Studio (.deb)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ./fmodstudio.deb || sudo apt-get -f install -y
+
+      - name: Locate fmodstudio binary
+        run: |
+          set -e
+          # Tenta caminhos comuns e fallback com `command -v`/`find`
+          if command -v fmodstudio >/dev/null 2>&1; then
+            echo "FMOD_EXE=$(command -v fmodstudio)" >> $GITHUB_ENV
+          else
+            CANDIDATES=(
+              "/opt/fmodstudio/fmodstudio"
+              "/opt/fmodstudio/bin/fmodstudio"
+              "/usr/bin/fmodstudio"
+              "/usr/local/bin/fmodstudio"
+            )
+            FOUND=""
+            for p in "${CANDIDATES[@]}"; do
+              if [ -x "$p" ]; then FOUND="$p"; break; fi
+            done
+            if [ -z "$FOUND" ]; then
+              FOUND="$(sudo find / -maxdepth 5 -type f -name fmodstudio -perm -111 2>/dev/null | head -n 1 || true)"
+            fi
+            if [ -z "$FOUND" ]; then
+              echo "Não encontrei o executável fmodstudio no Linux." >&2
+              exit 1
+            fi
+            echo "FMOD_EXE=$FOUND" >> $GITHUB_ENV
+          fi
+          echo "FMOD_EXE=$FMOD_EXE"
+
+      - name: Build banks
+        run: |
+          set -e
+          if [ ! -f "$FSPRO" ]; then
+            echo ".fspro não encontrado: $FSPRO" >&2
+            exit 1
+          fi
+          if [ -z "${{ inputs.build_arg }}" ]; then
+            "$FMOD_EXE" -build "$FSPRO"
+          else
+            "$FMOD_EXE" -build "$FSPRO" ${{ inputs.build_arg }}
+          fi
+
+      - name: Collect banks (keeps folder structure)
+        run: |
+          set -e
+          mkdir -p out_banks
+          # Exclui Assets/Metadata/Plugins pra não pegar coisas erradas
+          mapfile -t BANKS < <(find . -type f -name "*.bank" \
+            ! -path "./Assets/*" ! -path "./Metadata/*" ! -path "./Plugins/*")
+
+          if [ "${#BANKS[@]}" -eq 0 ]; then
+            echo "Nenhum .bank encontrado." >&2
+            exit 1
+          fi
+
+          for b in "${BANKS[@]}"; do
+            rel="${b#./}"
+            mkdir -p "out_banks/$(dirname "$rel")"
+            cp -f "$b" "out_banks/$rel"
+          done
+
+          ls -lah out_banks || true
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.ARTIFACT }}
+          path: out_banks
+
+  build-linux-appimage:
+    if: ${{ inputs.runner_os == 'linux' && inputs.fmod_channel == 'linux-appimage' }}
+    runs-on: ubuntu-latest
+    env:
+      FSPRO: ${{ inputs.fspro_path }}
+      ARTIFACT: ${{ inputs.artifact_name }}
+      FMOD_URL: https://github.com/kiroayu576-ops/STUDIO-/releases/download/Va/fmodstudio20302linux64-installer.AppImage
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download FMOD Studio (AppImage)
+        run: |
+          curl -L "$FMOD_URL" -o fmodstudio.AppImage
+          chmod +x fmodstudio.AppImage
+
+      - name: Build banks (AppImage)
+        run: |
+          set -e
+          if [ ! -f "$FSPRO" ]; then
+            echo ".fspro não encontrado: $FSPRO" >&2
+            exit 1
+          fi
+
+          # AppImage roda direto. Alguns builds podem exigir libs gráficas mesmo no -build.
+          # Se falhar aqui, prefira o job Windows ou runner self-hosted.
+          if [ -z "${{ inputs.build_arg }}" ]; then
+            ./fmodstudio.AppImage -build "$FSPRO"
+          else
+            ./fmodstudio.AppImage -build "$FSPRO" ${{ inputs.build_arg }}
+          fi
+
+      - name: Collect banks (keeps folder structure)
+        run: |
+          set -e
+          mkdir -p out_banks
+          mapfile -t BANKS < <(find . -type f -name "*.bank" \
+            ! -path "./Assets/*" ! -path "./Metadata/*" ! -path "./Plugins/*")
+
+          if [ "${#BANKS[@]}" -eq 0 ]; then
+            echo "Nenhum .bank encontrado." >&2
+            exit 1
+          fi
+
+          for b in "${BANKS[@]}"; do
+            rel="${b#./}"
+            mkdir -p "out_banks/$(dirname "$rel")"
+            cp -f "$b" "out_banks/$rel"
+          done
+
+          ls -lah out_banks || true
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.ARTIFACT }}
+          path: out_banks

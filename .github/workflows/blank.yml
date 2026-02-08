@@ -6,32 +6,52 @@ on:
       runner_os:
         description: "Runner (Windows ou Linux)"
         required: true
-        default: "windows"
+        default: "linux"
         type: choice
         options:
           - windows
           - linux
+
       fmod_package:
         description: "Pacote do FMOD Studio (do seu Release)"
         required: true
-        default: "win64-exe"
+        default: "linux-deb"
         type: choice
         options:
           - win64-exe
           - linux-deb
           - linux-appimage
+
       release_tag:
         description: "Tag do Release no seu repo (onde estão os installers)"
         required: true
         default: "Va"
+
+      win_asset_name:
+        description: "Nome do asset do Windows no Release (EXE)"
+        required: true
+        default: "fmodstudio20302win64-installer.exe"
+
+      deb_asset_name:
+        description: "Nome do asset do Linux no Release (DEB)"
+        required: true
+        default: "fmodstudio20302linux64-installer.deb"
+
+      appimage_asset_name:
+        description: "Nome do asset do Linux no Release (AppImage)"
+        required: true
+        default: "fmodstudio20302linux64-installer.AppImage"
+
       fspro_path:
         description: "Caminho do .fspro no repo"
         required: true
         default: "celeste_audio.fspro"
+
       artifact_name:
         description: "Nome do artifact de saída"
         required: true
         default: "fmod-banks"
+
       extra_build_args:
         description: "Argumentos extras para o build (opcional)"
         required: false
@@ -45,7 +65,7 @@ jobs:
       FSPRO: ${{ inputs.fspro_path }}
       ARTIFACT: ${{ inputs.artifact_name }}
       INSTALL_DIR: C:\FMODStudio
-      FMOD_URL: https://github.com/kiroayu576-ops/STUDIO-/releases/download/${{ inputs.release_tag }}/fmodstudio20302win64-installer.exe
+      FMOD_URL: https://github.com/kiroayu576-ops/STUDIO-/releases/download/${{ inputs.release_tag }}/${{ inputs.win_asset_name }}
 
     steps:
       - name: Checkout
@@ -56,21 +76,51 @@ jobs:
         run: |
           Invoke-WebRequest -Uri "$env:FMOD_URL" -OutFile "fmod_installer.exe"
 
-      - name: Install FMOD Studio (silent best-effort)
+      - name: Install FMOD Studio (best-effort silent strategies)
         shell: powershell
         run: |
           New-Item -ItemType Directory -Force -Path "$env:INSTALL_DIR" | Out-Null
 
-          # Muitos installers (NSIS) aceitam /S e /D=...
-          # Se o installer não suportar silent, este passo pode falhar.
-          $args = @("/S", "/D=$($env:INSTALL_DIR)")
-          $p = Start-Process -FilePath ".\fmod_installer.exe" -ArgumentList $args -Wait -PassThru
+          $silentAttempts = @(
+            @("/S", "/D=$($env:INSTALL_DIR)"),
+            @("/SILENT"),
+            @("/VERYSILENT"),
+            @("/quiet"),
+            @("/silent")
+          )
 
-          if ($p.ExitCode -ne 0) {
-            Write-Error "Falha ao instalar FMOD em modo silencioso (ExitCode=$($p.ExitCode)). Se isso acontecer, use Linux AppImage ou runner self-hosted com FMOD já instalado."
+          $installed = $false
+
+          foreach ($args in $silentAttempts) {
+            Write-Host "Tentando instalar com args: $($args -join ' ')"
+            try {
+              $p = Start-Process -FilePath ".\fmod_installer.exe" -ArgumentList $args -Wait -PassThru
+            } catch {
+              Write-Host "Falha ao executar installer com args atuais."
+              continue
+            }
+
+            # Após cada tentativa, tenta localizar o exe
+            $candidates = @(
+              "$($env:INSTALL_DIR)\fmodstudio.exe",
+              "$($env:INSTALL_DIR)\FMOD Studio\fmodstudio.exe",
+              "C:\Program Files\FMOD SoundSystem\FMOD Studio\fmodstudio.exe",
+              "C:\Program Files\FMOD SoundSystem\FMOD Studio 2.02\fmodstudio.exe",
+              "C:\Program Files\FMOD SoundSystem\FMOD Studio 2.03\fmodstudio.exe"
+            )
+
+            foreach ($c in $candidates) {
+              if (Test-Path $c) { $installed = $true; break }
+            }
+
+            if ($installed) { break }
           }
 
-      - name: Locate fmodstudio.exe (FIX)
+          if (-not $installed) {
+            Write-Error "Não consegui instalar FMOD Studio em modo silencioso no runner público. Use Linux (deb) com Xvfb ou runner self-hosted."
+          }
+
+      - name: Locate fmodstudio.exe
         shell: powershell
         run: |
           $install = $env:INSTALL_DIR
@@ -95,22 +145,27 @@ jobs:
           }
 
           if (-not $exe) {
-            Write-Error "Não encontrei fmodstudio.exe após instalação. Provável: installer não instalou em modo silencioso."
+            Write-Error "Não encontrei fmodstudio.exe após instalação."
           }
 
           "FMOD_EXE=$exe" | Out-File -FilePath $env:GITHUB_ENV -Append
           Write-Host "FMOD_EXE=$exe"
 
-      - name: Build banks
+      - name: Build banks (with clearer error on migration)
         shell: powershell
         run: |
           if (!(Test-Path $env:FSPRO)) { Write-Error ".fspro não encontrado: $env:FSPRO" }
 
           $args = "${{ inputs.extra_build_args }}".Trim()
-          if ([string]::IsNullOrWhiteSpace($args)) {
-            & $env:FMOD_EXE -build $env:FSPRO
-          } else {
-            & $env:FMOD_EXE -build $env:FSPRO $args
+
+          try {
+            if ([string]::IsNullOrWhiteSpace($args)) {
+              & $env:FMOD_EXE -build $env:FSPRO
+            } else {
+              & $env:FMOD_EXE -build $env:FSPRO $args
+            }
+          } catch {
+            Write-Error "Falha ao buildar. Se aparecer 'Project is out of date and requires project migration', você precisa usar a versão EXATA do FMOD Studio que criou esse .fspro (sem migrar), ou migrar via UI e commitar o projeto."
           }
 
       - name: Collect banks (keeps folder structure)
@@ -150,7 +205,7 @@ jobs:
     env:
       FSPRO: ${{ inputs.fspro_path }}
       ARTIFACT: ${{ inputs.artifact_name }}
-      FMOD_URL: https://github.com/kiroayu576-ops/STUDIO-/releases/download/${{ inputs.release_tag }}/fmodstudio20302linux64-installer.deb
+      FMOD_URL: https://github.com/kiroayu576-ops/STUDIO-/releases/download/${{ inputs.release_tag }}/${{ inputs.deb_asset_name }}
 
     steps:
       - name: Checkout
@@ -165,11 +220,13 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y ./fmodstudio.deb || sudo apt-get -f install -y
 
-      - name: Install headless deps (Qt/XCB + Xvfb)
+      - name: Install headless deps (Qt/XCB + Xvfb + Audio shim)
         run: |
           sudo apt-get update
           sudo apt-get install -y \
             xvfb \
+            pulseaudio \
+            pulseaudio-utils \
             libxcb-cursor0 \
             libxkbcommon-x11-0 \
             libxcb-icccm4 \
@@ -182,6 +239,14 @@ jobs:
             libxcb-xfixes0 \
             libglib2.0-0 \
             libdbus-1-3
+
+      - name: Start PulseAudio dummy (avoid hang)
+        run: |
+          pulseaudio -D --exit-idle-time=-1 || true
+          pactl load-module module-null-sink sink_name=Dummy sink_properties=device.description=Dummy || true
+          pactl set-default-sink Dummy || true
+          pactl info || true
+          pactl list short sinks || true
 
       - name: Locate fmodstudio
         run: |
@@ -198,7 +263,7 @@ jobs:
           fi
           echo "FMOD_EXE=$FMOD_EXE"
 
-      - name: Build banks (headless via Xvfb)
+      - name: Build banks (headless via Xvfb + PulseAudio env)
         run: |
           set -e
           if [ ! -f "$FSPRO" ]; then
@@ -208,9 +273,9 @@ jobs:
 
           EXTRA="${{ inputs.extra_build_args }}"
           if [ -z "$EXTRA" ]; then
-            xvfb-run -a "$FMOD_EXE" -build "$FSPRO"
+            xvfb-run -a env PULSE_SERVER=127.0.0.1 "$FMOD_EXE" -build "$FSPRO"
           else
-            xvfb-run -a "$FMOD_EXE" -build "$FSPRO" $EXTRA
+            xvfb-run -a env PULSE_SERVER=127.0.0.1 "$FMOD_EXE" -build "$FSPRO" $EXTRA
           fi
 
       - name: Collect banks (keeps folder structure)
@@ -245,7 +310,7 @@ jobs:
     env:
       FSPRO: ${{ inputs.fspro_path }}
       ARTIFACT: ${{ inputs.artifact_name }}
-      FMOD_URL: https://github.com/kiroayu576-ops/STUDIO-/releases/download/${{ inputs.release_tag }}/fmodstudio20302linux64-installer.AppImage
+      FMOD_URL: https://github.com/kiroayu576-ops/STUDIO-/releases/download/${{ inputs.release_tag }}/${{ inputs.appimage_asset_name }}
 
     steps:
       - name: Checkout
@@ -256,11 +321,14 @@ jobs:
           curl -L "$FMOD_URL" -o fmodstudio.AppImage
           chmod +x fmodstudio.AppImage
 
-      - name: Install headless deps (Qt/XCB + Xvfb)
+      - name: Install headless deps (Qt/XCB + Xvfb + Audio shim + FUSE libs)
         run: |
           sudo apt-get update
           sudo apt-get install -y \
             xvfb \
+            pulseaudio \
+            pulseaudio-utils \
+            libfuse2 \
             libxcb-cursor0 \
             libxkbcommon-x11-0 \
             libxcb-icccm4 \
@@ -274,7 +342,22 @@ jobs:
             libglib2.0-0 \
             libdbus-1-3
 
-      - name: Build banks (AppImage headless via Xvfb)
+      - name: Start PulseAudio dummy (avoid hang)
+        run: |
+          pulseaudio -D --exit-idle-time=-1 || true
+          pactl load-module module-null-sink sink_name=Dummy sink_properties=device.description=Dummy || true
+          pactl set-default-sink Dummy || true
+          pactl info || true
+          pactl list short sinks || true
+
+      - name: Extract AppImage (avoid FUSE requirement on runners)
+        run: |
+          set -e
+          ./fmodstudio.AppImage --appimage-extract
+          test -d squashfs-root
+          test -x squashfs-root/AppRun
+
+      - name: Build banks (AppImage extracted headless via Xvfb + PulseAudio env)
         run: |
           set -e
           if [ ! -f "$FSPRO" ]; then
@@ -284,9 +367,9 @@ jobs:
 
           EXTRA="${{ inputs.extra_build_args }}"
           if [ -z "$EXTRA" ]; then
-            xvfb-run -a ./fmodstudio.AppImage -build "$FSPRO"
+            xvfb-run -a env PULSE_SERVER=127.0.0.1 ./squashfs-root/AppRun -build "$FSPRO"
           else
-            xvfb-run -a ./fmodstudio.AppImage -build "$FSPRO" $EXTRA
+            xvfb-run -a env PULSE_SERVER=127.0.0.1 ./squashfs-root/AppRun -build "$FSPRO" $EXTRA
           fi
 
       - name: Collect banks (keeps folder structure)
@@ -314,3 +397,4 @@ jobs:
         with:
           name: ${{ env.ARTIFACT }}
           path: out_banks
+```0

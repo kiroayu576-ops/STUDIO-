@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.01.10.00">
+    <object class="MixerReturn" id="{7f93dae5-d646-46a5-ae9d-561b4ea5b4d8}">
+        <property name="volume">
+            <value>-80</value>
+        </property>
+        <property name="name">
+            <value>beginning_verb</value>
+        </property>
+        <relationship name="effectChain">
+            <destination>{e68a5990-6e38-49a0-830c-b0980d9f7134}</destination>
+        </relationship>
+        <relationship name="panner">
+            <destination>{69894a26-ae01-457d-a4d3-77ca2549f826}</destination>
+        </relationship>
+        <relationship name="output">
+            <destination>{24ffc423-525a-4e57-a96a-a392cf455198}</destination>
+        </relationship>
+    </object>
+    <object class="MixerBusEffectChain" id="{e68a5990-6e38-49a0-830c-b0980d9f7134}">
+        <relationship name="effects">
+            <destination>{f7abc97b-9a09-4d38-b83a-bb573e0a739d}</destination>
+            <destination>{0a84a3ad-b791-4fa9-98b6-0c2fbf307d83}</destination>
+            <destination>{4db6dcdb-8db3-43a8-817b-f30546d83ce8}</destination>
+        </relationship>
+    </object>
+    <object class="MixerBusPanner" id="{69894a26-ae01-457d-a4d3-77ca2549f826}"/>
+    <object class="MixerBusFader" id="{f7abc97b-9a09-4d38-b83a-bb573e0a739d}"/>
+    <object class="SFXReverbEffect" id="{0a84a3ad-b791-4fa9-98b6-0c2fbf307d83}">
+        <property name="decayTime">
+            <value>2900</value>
+        </property>
+        <property name="earlyDelay">
+            <value>15</value>
+        </property>
+        <property name="lateDelay">
+            <value>22</value>
+        </property>
+        <property name="HFDecayRatio">
+            <value>100</value>
+        </property>
+        <property name="highCut">
+            <value>20000</value>
+        </property>
+        <property name="earlyLateMix">
+            <value>59</value>
+        </property>
+        <property name="wetLevel">
+            <value>-11.3000002</value>
+        </property>
+        <property name="dryLevel">
+            <value>-80</value>
+        </property>
+    </object>
+    <object class="MultibandEqEffect" id="{4db6dcdb-8db3-43a8-817b-f30546d83ce8}">
+        <property name="frequencyA">
+            <value>1369.81946</value>
+        </property>
+        <property name="qualityA">
+            <value>0.288379312</value>
+        </property>
+    </object>
+</objects>

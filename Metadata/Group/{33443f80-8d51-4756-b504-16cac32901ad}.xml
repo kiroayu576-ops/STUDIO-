@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.01.10.00">
+    <object class="MixerGroup" id="{33443f80-8d51-4756-b504-16cac32901ad}">
+        <property name="name">
+            <value>key_unlocks</value>
+        </property>
+        <relationship name="effectChain">
+            <destination>{cf8e9911-4b58-4d5f-9c7d-0ac140a72428}</destination>
+        </relationship>
+        <relationship name="panner">
+            <destination>{614d6738-69af-4fe8-ab87-a7fe110d1af6}</destination>
+        </relationship>
+        <relationship name="output">
+            <destination>{cd8aa47e-bd24-45e3-808c-a0d546f9a915}</destination>
+        </relationship>
+    </object>
+    <object class="MixerBusEffectChain" id="{cf8e9911-4b58-4d5f-9c7d-0ac140a72428}">
+        <relationship name="effects">
+            <destination>{874ac382-7dad-40ec-95a8-87950fb70d6f}</destination>
+            <destination>{a2d392d7-e9aa-4174-a78c-239b0e6d0f0f}</destination>
+        </relationship>
+    </object>
+    <object class="MixerBusPanner" id="{614d6738-69af-4fe8-ab87-a7fe110d1af6}"/>
+    <object class="MixerBusFader" id="{874ac382-7dad-40ec-95a8-87950fb70d6f}"/>
+    <object class="CompressorEffect" id="{a2d392d7-e9aa-4174-a78c-239b0e6d0f0f}">
+        <property name="threshold">
+            <value>-6</value>
+        </property>
+    </object>
+</objects>

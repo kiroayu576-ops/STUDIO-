@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.01.10.00">
+    <object class="MixerGroup" id="{c66382b2-56ff-461e-8062-7f881794db85}">
+        <property name="name">
+            <value>music</value>
+        </property>
+        <relationship name="masters">
+            <destination>{277f4614-fa32-411a-addd-618b460440f8}</destination>
+        </relationship>
+        <relationship name="effectChain">
+            <destination>{a674c596-2ee4-4784-8b55-303a2bff705e}</destination>
+        </relationship>
+        <relationship name="panner">
+            <destination>{aefa626b-bed6-436b-aa79-13db6e23e8f8}</destination>
+        </relationship>
+        <relationship name="output">
+            <destination>{c7aad72f-9796-42d3-980b-d093fd765716}</destination>
+        </relationship>
+    </object>
+    <object class="MixerBusEffectChain" id="{a674c596-2ee4-4784-8b55-303a2bff705e}">
+        <relationship name="effects">
+            <destination>{427a0c5c-489f-43d7-9f1b-4c6a3ac9d9de}</destination>
+            <destination>{1a498f09-35af-4a3a-8bea-2555e5422945}</destination>
+            <destination>{13a7701b-0d2a-4bd5-93b1-393d0e752eac}</destination>
+        </relationship>
+    </object>
+    <object class="MixerBusPanner" id="{aefa626b-bed6-436b-aa79-13db6e23e8f8}"/>
+    <object class="MixerBusFader" id="{427a0c5c-489f-43d7-9f1b-4c6a3ac9d9de}"/>
+    <object class="LowpassEffect" id="{1a498f09-35af-4a3a-8bea-2555e5422945}">
+        <property name="cutoff">
+            <value>22000</value>
+        </property>
+    </object>
+    <object class="ChorusEffect" id="{13a7701b-0d2a-4bd5-93b1-393d0e752eac}">
+        <property name="rate">
+            <value>0.659999967</value>
+        </property>
+        <property name="depth">
+            <value>76</value>
+        </property>
+        <property name="mix">
+            <value>0</value>
+        </property>
+    </object>
+</objects>

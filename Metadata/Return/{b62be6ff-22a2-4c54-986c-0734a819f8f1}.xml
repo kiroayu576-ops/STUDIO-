@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.01.10.00">
+    <object class="MixerReturn" id="{b62be6ff-22a2-4c54-986c-0734a819f8f1}">
+        <property name="volume">
+            <value>-80</value>
+        </property>
+        <property name="name">
+            <value>gondola_verb</value>
+        </property>
+        <relationship name="effectChain">
+            <destination>{94fedb93-a903-4e5e-af95-264d79ddbaae}</destination>
+        </relationship>
+        <relationship name="panner">
+            <destination>{9aa0c566-1cb9-4579-a520-a6d43c79b833}</destination>
+        </relationship>
+        <relationship name="output">
+            <destination>{130cca3c-25f1-4e3f-a26a-d604b2a1bf58}</destination>
+        </relationship>
+    </object>
+    <object class="MixerBusEffectChain" id="{94fedb93-a903-4e5e-af95-264d79ddbaae}">
+        <relationship name="effects">
+            <destination>{c6200bfe-f78d-426b-a681-8a0539800e12}</destination>
+            <destination>{7075b687-2477-4ebe-aa08-95c53612cf7f}</destination>
+        </relationship>
+    </object>
+    <object class="MixerBusPanner" id="{9aa0c566-1cb9-4579-a520-a6d43c79b833}"/>
+    <object class="MixerBusFader" id="{c6200bfe-f78d-426b-a681-8a0539800e12}"/>
+    <object class="SFXReverbEffect" id="{7075b687-2477-4ebe-aa08-95c53612cf7f}">
+        <property name="decayTime">
+            <value>12000</value>
+        </property>
+        <property name="earlyDelay">
+            <value>0</value>
+        </property>
+        <property name="lateDelay">
+            <value>0</value>
+        </property>
+        <property name="HFDecayRatio">
+            <value>47.5</value>
+        </property>
+        <property name="lowShelfGain">
+            <value>-16.5</value>
+        </property>
+        <property name="highCut">
+            <value>1300</value>
+        </property>
+        <property name="earlyLateMix">
+            <value>82</value>
+        </property>
+        <property name="wetLevel">
+            <value>-4</value>
+        </property>
+        <property name="dryLevel">
+            <value>-80</value>
+        </property>
+    </object>
+</objects>

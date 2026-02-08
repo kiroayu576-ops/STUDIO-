@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.01.10.00">
+    <object class="MixerReturn" id="{ea09e719-2d63-4cfa-90b1-7bc68aa0fb89}">
+        <property name="volume">
+            <value>-80</value>
+        </property>
+        <property name="name">
+            <value>eye_pulse</value>
+        </property>
+        <relationship name="effectChain">
+            <destination>{d1f4dc3d-41d3-4684-9b35-7e6b0a54e671}</destination>
+        </relationship>
+        <relationship name="panner">
+            <destination>{28672f49-3e88-461f-bad9-9c54de4a22b6}</destination>
+        </relationship>
+        <relationship name="output">
+            <destination>{2d452462-5099-4832-9c7b-6244168969f8}</destination>
+        </relationship>
+    </object>
+    <object class="MixerBusEffectChain" id="{d1f4dc3d-41d3-4684-9b35-7e6b0a54e671}">
+        <relationship name="effects">
+            <destination>{463a1dc4-88eb-450a-b5fe-f7f92079db1e}</destination>
+            <destination>{f99142a3-10fd-4ea3-9857-dfc401b0d19a}</destination>
+        </relationship>
+    </object>
+    <object class="MixerBusPanner" id="{28672f49-3e88-461f-bad9-9c54de4a22b6}"/>
+    <object class="MixerBusFader" id="{463a1dc4-88eb-450a-b5fe-f7f92079db1e}"/>
+    <object class="Sidechain" id="{f99142a3-10fd-4ea3-9857-dfc401b0d19a}">
+        <relationship name="targets">
+            <destination>{dcc5c630-7fa7-4039-86ef-f5dd89e9c714}</destination>
+        </relationship>
+    </object>
+</objects>

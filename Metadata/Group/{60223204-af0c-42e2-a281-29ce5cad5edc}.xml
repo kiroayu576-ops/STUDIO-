@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.01.10.00">
+    <object class="MixerGroup" id="{60223204-af0c-42e2-a281-29ce5cad5edc}">
+        <property name="name">
+            <value>room_lightlevel</value>
+        </property>
+        <property name="maxInstances">
+            <value>1</value>
+        </property>
+        <relationship name="effectChain">
+            <destination>{16173fc6-8321-4f84-91ef-11cb65ddc441}</destination>
+        </relationship>
+        <relationship name="panner">
+            <destination>{96d4e293-0cef-4ed4-ba5b-79bf7a33d099}</destination>
+        </relationship>
+        <relationship name="output">
+            <destination>{7eab4c86-6346-457f-a497-c4464651f92c}</destination>
+        </relationship>
+    </object>
+    <object class="MixerBusEffectChain" id="{16173fc6-8321-4f84-91ef-11cb65ddc441}">
+        <relationship name="effects">
+            <destination>{04938048-c79a-4886-ac1d-6737d2002cdc}</destination>
+        </relationship>
+    </object>
+    <object class="MixerBusPanner" id="{96d4e293-0cef-4ed4-ba5b-79bf7a33d099}"/>
+    <object class="MixerBusFader" id="{04938048-c79a-4886-ac1d-6737d2002cdc}"/>
+</objects>

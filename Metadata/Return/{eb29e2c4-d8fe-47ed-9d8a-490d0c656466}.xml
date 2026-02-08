@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.01.10.00">
+    <object class="MixerReturn" id="{eb29e2c4-d8fe-47ed-9d8a-490d0c656466}">
+        <property name="name">
+            <value>granny_clouds_dialogue</value>
+        </property>
+        <relationship name="effectChain">
+            <destination>{9e2282e7-d032-4074-b25f-5e223f9dc75b}</destination>
+        </relationship>
+        <relationship name="panner">
+            <destination>{33683d95-5300-4448-a1f8-d7c3f85ad54c}</destination>
+        </relationship>
+        <relationship name="output">
+            <destination>{aac396d1-a63f-418a-810a-5d5a59fb2c43}</destination>
+        </relationship>
+    </object>
+    <object class="MixerBusEffectChain" id="{9e2282e7-d032-4074-b25f-5e223f9dc75b}">
+        <relationship name="effects">
+            <destination>{0ac36122-2ba0-4868-ac25-0550855d179a}</destination>
+            <destination>{a27faa85-c36a-43f2-8098-215f3c0b3d4c}</destination>
+            <destination>{16b28d8e-f6ab-4a76-98b7-19b65a18f9e6}</destination>
+            <destination>{0f20a55e-cc7c-4da2-96ad-11c5bc5efe96}</destination>
+            <destination>{69b7c04c-6ce4-4873-9698-ccc9b49f8c43}</destination>
+        </relationship>
+    </object>
+    <object class="MixerBusPanner" id="{33683d95-5300-4448-a1f8-d7c3f85ad54c}"/>
+    <object class="MultibandEqEffect" id="{0ac36122-2ba0-4868-ac25-0550855d179a}">
+        <property name="filterTypeA">
+            <value>4</value>
+        </property>
+        <property name="frequencyA">
+            <value>54.0684319</value>
+        </property>
+        <property name="qualityA">
+            <value>0.267448276</value>
+        </property>
+    </object>
+    <object class="DelayEffect" id="{a27faa85-c36a-43f2-8098-215f3c0b3d4c}">
+        <property name="delay">
+            <value>375</value>
+        </property>
+        <property name="level">
+            <value>-15</value>
+        </property>
+        <property name="dryLevel">
+            <value>-80</value>
+        </property>
+    </object>
+    <object class="SFXReverbEffect" id="{16b28d8e-f6ab-4a76-98b7-19b65a18f9e6}">
+        <property name="decayTime">
+            <value>1900</value>
+        </property>
+        <property name="earlyDelay">
+            <value>15</value>
+        </property>
+        <property name="lateDelay">
+            <value>22</value>
+        </property>
+        <property name="HFDecayRatio">
+            <value>100</value>
+        </property>
+        <property name="highCut">
+            <value>20000</value>
+        </property>
+        <property name="earlyLateMix">
+            <value>59</value>
+        </property>
+        <property name="wetLevel">
+            <value>-12</value>
+        </property>
+    </object>
+    <object class="MixerBusFader" id="{0f20a55e-cc7c-4da2-96ad-11c5bc5efe96}"/>
+    <object class="CompressorEffect" id="{69b7c04c-6ce4-4873-9698-ccc9b49f8c43}">
+        <property name="threshold">
+            <value>-32</value>
+        </property>
+        <property name="sidechainEnabled">
+            <value>true</value>
+        </property>
+    </object>
+</objects>

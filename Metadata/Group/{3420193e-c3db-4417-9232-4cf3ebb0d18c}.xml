@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.01.10.00">
+    <object class="MixerGroup" id="{3420193e-c3db-4417-9232-4cf3ebb0d18c}">
+        <property name="name">
+            <value>gondola_halted</value>
+        </property>
+        <relationship name="effectChain">
+            <destination>{9b110a28-f66a-4a45-a8f5-52a093d363c6}</destination>
+        </relationship>
+        <relationship name="panner">
+            <destination>{93e5133b-8010-4de7-adb0-58ffa0621439}</destination>
+        </relationship>
+        <relationship name="output">
+            <destination>{130cca3c-25f1-4e3f-a26a-d604b2a1bf58}</destination>
+        </relationship>
+    </object>
+    <object class="MixerBusEffectChain" id="{9b110a28-f66a-4a45-a8f5-52a093d363c6}">
+        <relationship name="effects">
+            <destination>{04eccae3-3f86-45ec-8388-15b9a0714aae}</destination>
+            <destination>{682abb32-9d7e-4cbc-aab6-7a9254d17378}</destination>
+        </relationship>
+    </object>
+    <object class="MixerBusPanner" id="{93e5133b-8010-4de7-adb0-58ffa0621439}"/>
+    <object class="MixerSend" id="{04eccae3-3f86-45ec-8388-15b9a0714aae}">
+        <property name="level">
+            <value>0</value>
+        </property>
+        <property name="inputFormat">
+            <value>1</value>
+        </property>
+        <relationship name="mixerReturn">
+            <destination>{b62be6ff-22a2-4c54-986c-0734a819f8f1}</destination>
+        </relationship>
+    </object>
+    <object class="MixerBusFader" id="{682abb32-9d7e-4cbc-aab6-7a9254d17378}"/>
+</objects>

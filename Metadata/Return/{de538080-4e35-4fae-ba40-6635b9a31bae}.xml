@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.01.10.00">
+    <object class="MixerReturn" id="{de538080-4e35-4fae-ba40-6635b9a31bae}">
+        <property name="volume">
+            <value>-80</value>
+        </property>
+        <property name="name">
+            <value>Reverb_Dash_Assist</value>
+        </property>
+        <relationship name="masters">
+            <destination>{64ceaf84-8717-4592-80ab-6f3d75b5a276}</destination>
+        </relationship>
+        <relationship name="effectChain">
+            <destination>{faecc1b8-cee7-4d28-9b64-96c7006a5cca}</destination>
+        </relationship>
+        <relationship name="panner">
+            <destination>{af849899-0929-4408-aff5-cf5017249a07}</destination>
+        </relationship>
+        <relationship name="output">
+            <destination>{c7aad72f-9796-42d3-980b-d093fd765716}</destination>
+        </relationship>
+    </object>
+    <object class="MixerBusEffectChain" id="{faecc1b8-cee7-4d28-9b64-96c7006a5cca}">
+        <relationship name="effects">
+            <destination>{cdb5c648-7716-4b1d-8348-b385f4963081}</destination>
+            <destination>{b95f48fa-509f-448b-8d0e-7b2bc26cbe8a}</destination>
+        </relationship>
+    </object>
+    <object class="MixerBusPanner" id="{af849899-0929-4408-aff5-cf5017249a07}"/>
+    <object class="SFXReverbEffect" id="{cdb5c648-7716-4b1d-8348-b385f4963081}">
+        <property name="decayTime">
+            <value>6500</value>
+        </property>
+        <property name="lateDelay">
+            <value>30</value>
+        </property>
+        <property name="HFDecayRatio">
+            <value>59</value>
+        </property>
+        <property name="highCut">
+            <value>5850</value>
+        </property>
+        <property name="earlyLateMix">
+            <value>64</value>
+        </property>
+        <property name="wetLevel">
+            <value>-9</value>
+        </property>
+        <property name="dryLevel">
+            <value>-80</value>
+        </property>
+    </object>
+    <object class="MixerBusFader" id="{b95f48fa-509f-448b-8d0e-7b2bc26cbe8a}"/>
+</objects>

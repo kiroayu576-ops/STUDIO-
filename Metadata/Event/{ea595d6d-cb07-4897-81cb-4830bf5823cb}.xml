@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.01.10.00">
+    <object class="Event" id="{ea595d6d-cb07-4897-81cb-4830bf5823cb}">
+        <property name="name">
+            <value>!!!_README_FIRST</value>
+        </property>
+        <property name="note">
+            <value>Hey there,
+
+Kevin Regamey here, Creative Director and Co-Founder at Power Up Audio. I took point on Celeste's sound design and audio implementation, alongside Lena Raine on music, and with support from the rest of the team at Power Up. Thanks for taking a look.
+
+We've released this project file to both support the Celeste modding community, and also to perhaps serve as a glimpse into what a shipped game's sound might look like under the hood. All source sound effects are included with this project file, and Lena has been gracious enough to include her source music as well.
+
+That said, the sound and music content herein is not to be used for any purpose apart from the modding of Celeste, or personal development in game audio.
+
+
+Feel free to browse through the Sound Events in the left-hand Events pane. I know it can be a little challenging diving into someone else's work, so we've gone through the entire project, and we've added notes here and there to shed some light on what we've got going on. Hope it helps!
+
+
+Big thanks to the team at FMOD for helping get this project out there, to the rest of the Celeste team for being cool with this release, and to you for digging in.
+
+
+Cheers,
+
+- kr
+
+Power Up Audio Inc.
+www.powerupaudio.com
+@powerupaudio
+
+
+</value>
+        </property>
+        <property name="outputFormat">
+            <value>0</value>
+        </property>
+        <relationship name="folder">
+            <destination>{7bce2878-13fd-4768-a01c-611b4a0c6c21}</destination>
+        </relationship>
+        <relationship name="mixer">
+            <destination>{7fdeaf85-fdd9-4dff-b6ce-e80940bde702}</destination>
+        </relationship>
+        <relationship name="masterTrack">
+            <destination>{2c9a2906-a4b2-4897-82e4-0d7c2a1d0183}</destination>
+        </relationship>
+        <relationship name="mixerInput">
+            <destination>{f055c325-979d-4b98-86bd-880db4c0e2d8}</destination>
+        </relationship>
+        <relationship name="automatableProperties">
+            <destination>{d6c5e7d3-7f28-40cd-bfac-b70d99598b0a}</destination>
+        </relationship>
+        <relationship name="markerTracks">
+            <destination>{4af84fbe-c617-497e-bb90-918fdaf81b1d}</destination>
+        </relationship>
+        <relationship name="timeline">
+            <destination>{6e5b1403-66a5-49fc-a5d6-74c4a0cf74d3}</destination>
+        </relationship>
+    </object>
+    <object class="EventMixer" id="{7fdeaf85-fdd9-4dff-b6ce-e80940bde702}">
+        <relationship name="masterBus">
+            <destination>{2b5bf252-06ad-42e4-a204-fef824dd1998}</destination>
+        </relationship>
+    </object>
+    <object class="MasterTrack" id="{2c9a2906-a4b2-4897-82e4-0d7c2a1d0183}">
+        <relationship name="mixerGroup">
+            <destination>{2b5bf252-06ad-42e4-a204-fef824dd1998}</destination>
+        </relationship>
+    </object>
+    <object class="MixerInput" id="{f055c325-979d-4b98-86bd-880db4c0e2d8}">
+        <relationship name="effectChain">
+            <destination>{fed823f3-0645-4e5f-8259-e14ab4fcc157}</destination>
+        </relationship>
+        <relationship name="panner">
+            <destination>{fd0a60b7-f370-4026-b91f-caf4dd6dc079}</destination>
+        </relationship>
+        <relationship name="output">
+            <destination>{c7aad72f-9796-42d3-980b-d093fd765716}</destination>
+        </relationship>
+    </object>
+    <object class="EventAutomatableProperties" id="{d6c5e7d3-7f28-40cd-bfac-b70d99598b0a}"/>
+    <object class="MarkerTrack" id="{4af84fbe-c617-497e-bb90-918fdaf81b1d}"/>
+    <object class="Timeline" id="{6e5b1403-66a5-49fc-a5d6-74c4a0cf74d3}"/>
+    <object class="EventMixerMaster" id="{2b5bf252-06ad-42e4-a204-fef824dd1998}">
+        <relationship name="effectChain">
+            <destination>{0e71623e-bb65-4d54-8801-ba8f6fab2039}</destination>
+        </relationship>
+        <relationship name="panner">
+            <destination>{71071e4f-d5d0-4262-a5a0-240ecf226c92}</destination>
+        </relationship>
+        <relationship name="mixer">
+            <destination>{7fdeaf85-fdd9-4dff-b6ce-e80940bde702}</destination>
+        </relationship>
+    </object>
+    <object class="MixerBusEffectChain" id="{fed823f3-0645-4e5f-8259-e14ab4fcc157}">
+        <relationship name="effects">
+            <destination>{106bfd08-408f-4369-8188-9028f5ee70be}</destination>
+        </relationship>
+    </object>
+    <object class="MixerBusPanner" id="{fd0a60b7-f370-4026-b91f-caf4dd6dc079}"/>
+    <object class="MixerBusEffectChain" id="{0e71623e-bb65-4d54-8801-ba8f6fab2039}">
+        <relationship name="effects">
+            <destination>{ecf58ea4-30c5-4909-9a8d-ca2d799c0602}</destination>
+        </relationship>
+    </object>
+    <object class="MixerBusPanner" id="{71071e4f-d5d0-4262-a5a0-240ecf226c92}"/>
+    <object class="MixerBusFader" id="{106bfd08-408f-4369-8188-9028f5ee70be}"/>
+    <object class="MixerBusFader" id="{ecf58ea4-30c5-4909-9a8d-ca2d799c0602}"/>
+</objects>

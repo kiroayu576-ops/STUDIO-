@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.01.10.00">
+    <object class="MixerGroup" id="{bc44100e-d99c-401f-92a3-38ee8dd8e8ae}">
+        <property name="name">
+            <value>clutterswitch_presses</value>
+        </property>
+        <relationship name="effectChain">
+            <destination>{02ed56c9-3c27-4830-b853-772aa8b4d1e5}</destination>
+        </relationship>
+        <relationship name="panner">
+            <destination>{f415672f-c387-4192-aa01-29de4c5585e3}</destination>
+        </relationship>
+        <relationship name="output">
+            <destination>{cd8aa47e-bd24-45e3-808c-a0d546f9a915}</destination>
+        </relationship>
+    </object>
+    <object class="MixerBusEffectChain" id="{02ed56c9-3c27-4830-b853-772aa8b4d1e5}">
+        <relationship name="effects">
+            <destination>{4f10b8d5-f184-45f8-9ddb-3c4c6f2ee99d}</destination>
+            <destination>{fa479244-e19e-4330-b9f2-474af8af27dc}</destination>
+        </relationship>
+    </object>
+    <object class="MixerBusPanner" id="{f415672f-c387-4192-aa01-29de4c5585e3}"/>
+    <object class="MixerBusFader" id="{4f10b8d5-f184-45f8-9ddb-3c4c6f2ee99d}"/>
+    <object class="Sidechain" id="{fa479244-e19e-4330-b9f2-474af8af27dc}">
+        <relationship name="targets">
+            <destination>{a2f42e94-38bf-4568-ac72-85ca65c10438}</destination>
+        </relationship>
+    </object>
+</objects>

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.01.10.00">
+    <object class="MixerReturn" id="{1156896d-4cbe-4f11-ad91-44626753f14a}">
+        <property name="volume">
+            <value>-19.8000011</value>
+        </property>
+        <property name="name">
+            <value>pico8_verb</value>
+        </property>
+        <relationship name="effectChain">
+            <destination>{64628e4c-bbf1-4879-b44f-ed15a6b55513}</destination>
+        </relationship>
+        <relationship name="panner">
+            <destination>{3be7c106-48ab-4694-aace-4c3de96dd489}</destination>
+        </relationship>
+        <relationship name="output">
+            <destination>{3fdf5514-61e2-4c69-9fa7-5cd0a627fc16}</destination>
+        </relationship>
+    </object>
+    <object class="MixerBusEffectChain" id="{64628e4c-bbf1-4879-b44f-ed15a6b55513}">
+        <relationship name="effects">
+            <destination>{86516810-ad67-4ccc-a379-7b4dcabff4ed}</destination>
+            <destination>{a7a7268b-5a6e-4441-9965-53771fa79502}</destination>
+        </relationship>
+    </object>
+    <object class="MixerBusPanner" id="{3be7c106-48ab-4694-aace-4c3de96dd489}"/>
+    <object class="MixerBusFader" id="{86516810-ad67-4ccc-a379-7b4dcabff4ed}"/>
+    <object class="SFXReverbEffect" id="{a7a7268b-5a6e-4441-9965-53771fa79502}">
+        <property name="decayTime">
+            <value>2300</value>
+        </property>
+        <property name="earlyDelay">
+            <value>12</value>
+        </property>
+        <property name="lateDelay">
+            <value>17</value>
+        </property>
+        <property name="HFDecayRatio">
+            <value>64</value>
+        </property>
+        <property name="highCut">
+            <value>7800</value>
+        </property>
+        <property name="earlyLateMix">
+            <value>71</value>
+        </property>
+        <property name="wetLevel">
+            <value>-8.5</value>
+        </property>
+        <property name="dryLevel">
+            <value>-80</value>
+        </property>
+    </object>
+</objects>

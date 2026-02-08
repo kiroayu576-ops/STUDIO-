@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.01.10.00">
+    <object class="Event" id="{e27b3ab9-d6c9-4952-92bf-e652b98a9ed5}">
+        <property name="name">
+            <value>!!!_README</value>
+        </property>
+        <property name="note">
+            <value>The dialogue events are kind of crazy.
+
+Basically, a given character's dialogue event will play/loop for the entire duration of a conversation for which that character is present.
+
+The portrait shown next to each line of dialogue in-game drives the &quot;dialogue_portrait&quot; parameter in FMOD, which then throws the event's playhead to the correct emotional state on the timeline.
+
+Once the playhead arrives at a given emotion, we've got transitional &quot;hubs&quot; in place that do a pretty decent job of semi-randomly cycling through conversational syllables for each emotion.
+
+Once the text draw finishes for that line of dialogue, the &quot;dialogue_end&quot; parameter is thrown to 1, and the playhead returns to an idling standby state.
+
+
+
+This is one of the more complex systems we've got going on in FMOD, so feel free to watch the video for a deeper understanding of how this all works.</value>
+        </property>
+        <property name="outputFormat">
+            <value>0</value>
+        </property>
+        <relationship name="folder">
+            <destination>{34abcc04-9e39-4d80-84c6-c2a78735784f}</destination>
+        </relationship>
+        <relationship name="mixer">
+            <destination>{6c4c0774-e668-4d35-a55e-fbd352a2cc80}</destination>
+        </relationship>
+        <relationship name="masterTrack">
+            <destination>{dc39918a-6775-4276-b3c7-cf9a3162b656}</destination>
+        </relationship>
+        <relationship name="mixerInput">
+            <destination>{b8862df5-69cc-4dee-9ef3-0566bf110813}</destination>
+        </relationship>
+        <relationship name="automatableProperties">
+            <destination>{9887f7c9-223c-43f4-bdd0-e8479aa98bae}</destination>
+        </relationship>
+        <relationship name="markerTracks">
+            <destination>{3158768e-2fcd-46e2-a022-4b47045826b6}</destination>
+        </relationship>
+        <relationship name="timeline">
+            <destination>{4f9972d4-bbd7-4933-bc6d-78862d9daa32}</destination>
+        </relationship>
+    </object>
+    <object class="EventMixer" id="{6c4c0774-e668-4d35-a55e-fbd352a2cc80}">
+        <relationship name="masterBus">
+            <destination>{278d4356-d39d-4201-8c39-3567d44bcca2}</destination>
+        </relationship>
+    </object>
+    <object class="MasterTrack" id="{dc39918a-6775-4276-b3c7-cf9a3162b656}">
+        <relationship name="mixerGroup">
+            <destination>{278d4356-d39d-4201-8c39-3567d44bcca2}</destination>
+        </relationship>
+    </object>
+    <object class="MixerInput" id="{b8862df5-69cc-4dee-9ef3-0566bf110813}">
+        <relationship name="effectChain">
+            <destination>{13c55c49-6e67-46b0-b446-27b19ffdfad8}</destination>
+        </relationship>
+        <relationship name="panner">
+            <destination>{674356b8-426f-40c6-8f49-550c851f3926}</destination>
+        </relationship>
+        <relationship name="output">
+            <destination>{c7aad72f-9796-42d3-980b-d093fd765716}</destination>
+        </relationship>
+    </object>
+    <object class="EventAutomatableProperties" id="{9887f7c9-223c-43f4-bdd0-e8479aa98bae}"/>
+    <object class="MarkerTrack" id="{3158768e-2fcd-46e2-a022-4b47045826b6}"/>
+    <object class="Timeline" id="{4f9972d4-bbd7-4933-bc6d-78862d9daa32}"/>
+    <object class="EventMixerMaster" id="{278d4356-d39d-4201-8c39-3567d44bcca2}">
+        <relationship name="effectChain">
+            <destination>{a7675733-00b1-435e-a8a7-f6a2b09d47f2}</destination>
+        </relationship>
+        <relationship name="panner">
+            <destination>{d26a0781-e20b-4e74-94e5-15fb70fa6481}</destination>
+        </relationship>
+        <relationship name="mixer">
+            <destination>{6c4c0774-e668-4d35-a55e-fbd352a2cc80}</destination>
+        </relationship>
+    </object>
+    <object class="MixerBusEffectChain" id="{13c55c49-6e67-46b0-b446-27b19ffdfad8}">
+        <relationship name="effects">
+            <destination>{f0f39401-b472-403f-8c8f-25da4a5eac72}</destination>
+        </relationship>
+    </object>
+    <object class="MixerBusPanner" id="{674356b8-426f-40c6-8f49-550c851f3926}"/>
+    <object class="MixerBusEffectChain" id="{a7675733-00b1-435e-a8a7-f6a2b09d47f2}">
+        <relationship name="effects">
+            <destination>{ec773f20-6109-498e-93be-42967d18c68d}</destination>
+        </relationship>
+    </object>
+    <object class="MixerBusPanner" id="{d26a0781-e20b-4e74-94e5-15fb70fa6481}"/>
+    <object class="MixerBusFader" id="{f0f39401-b472-403f-8c8f-25da4a5eac72}"/>
+    <object class="MixerBusFader" id="{ec773f20-6109-498e-93be-42967d18c68d}"/>
+</objects>
